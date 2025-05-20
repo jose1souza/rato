@@ -39,50 +39,74 @@ class Labirinto
 
         int x = random.Next(limit);
         int y = random.Next(limit);
-        meuLab[x, y] = 'Q'; 
+        meuLab[x, y] = 'Q';
     }
 
     static void resolveLabirinto(char[,] labirinto, int i, int j)
     {
-        Stack<int> pilha_i = new Stack<int>();
-        Stack<int> pilha_j = new Stack<int>();
+        Stack<(int,int)> pilha = new Stack<(int,int)>();
+        // Stack<int> pilha_j = new Stack<int>();
         bool encontrou = false;
-        while(encontrou==false) // não achar o queijo
+        while (encontrou == false) // não achar o queijo
         {
+            if (labirinto[i, j] == 'Q')
+            {
+                Console.WriteLine("Achou o queijo! :) ");
+                encontrou = true;
+                break;
+            }
             labirinto[i, j] = 'v';
             int count = 0;
-            if (labirinto[i, j + 1] == '.' || labirinto[i,j] == 'Q')
+            if (labirinto[i, j + 1] == '.' || labirinto[i, j+1] == 'Q')
             {
-                pilha_i.Push(i);
-                pilha_j.Push(j);
+                pilha.Push((i, j));
+                //pilha_j.Push(j);
                 j++;
+                count++;
             }
-            else if(labirinto[i+1, j] == '.' || labirinto[i,j] == 'Q'){
-                pilha_i.Push(i);
-                pilha_j.Push(j);
+            else if (labirinto[i + 1, j] == '.' || labirinto[i+1, j] == 'Q')
+            {
+                pilha.Push((i, j));
+                // pilha_j.Push(j);
                 i++;
+                count++;
             }
-            else if(labirinto[i, j-1] == '.' || labirinto[i,j] == 'Q'){
-                pilha_i.Push(i);
-                pilha_j.Push(j);
+            else if (labirinto[i, j - 1] == '.' || labirinto[i, j-1] == 'Q')
+            {
+                pilha.Push((i, j));
+                //pilha_j.Push(j);
                 j--;
+                count++;
             }
-            else if(labirinto[i-1, j] == '.' || labirinto[i,j] == 'Q'){
-                pilha_i.Push(i);
-                pilha_j.Push(j);
+            else if (labirinto[i - 1, j] == '.' || labirinto[i-1, j] == 'Q')
+            {
+                pilha.Push((i,j));
+                //pilha_j.Push(j);
                 i--;
+                count++;
             }
-            else{
-                if(count > 0){
-                    i = pilha_i.Pop();
-                    j = pilha_j.Pop();
-                    i--;
-                    j--;
-                }
-                else if(count == 0){
-                    Console.WriteLine("É impossivel encontrar o queijo! :( ");
-                }
+            else if (pilha.Count > 0){
+                labirinto[i, j] = 'x';
+                (i,j) = pilha.Pop();
+                // j = pilha_j.Pop();
+                count--;
             }
+                else
+                {
+                    /*if (count > 0)
+                    {
+                        i = pilha_i.Pop();
+                        j = pilha_j.Pop();
+                        i--;
+                        j--;
+                        labirinto[i, j] = 'x';
+                    }
+                    else*/
+                    if (count == 0)
+                    {
+                        Console.WriteLine("É impossivel encontrar o queijo! :( ");
+                    }
+                }
             // tentar para baixo
             // tentar pra traz
             // tentar cima
@@ -94,7 +118,7 @@ class Labirinto
             Console.Clear();
             mostrarLabirinto(labirinto);
         }
-        
+
     }
 
     static void Main(string[] args)
@@ -104,7 +128,7 @@ class Labirinto
         criaLabirinto(maze);
         mostrarLabirinto(maze);
         Console.WriteLine("\nPosições iniciais (linha e coluna):");
-        x = Convert.ToInt32( Console.ReadLine());
+        x = Convert.ToInt32(Console.ReadLine());
         y = Convert.ToInt32(Console.ReadLine());
         resolveLabirinto(maze, x, y);
         Console.ReadKey();
